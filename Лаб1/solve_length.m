@@ -2,10 +2,10 @@ clear
 [h, L]=get_position_formuls();
 g=9.8;
 k=0.0000001;
-m=0.00356;
+m=0.00356-0.00054;
 v0=800;
-h0=1.75;
-alef=-1;
+h0=1.75-0.15;
+alef=0;
 
 h=subs(h,'g',g);
 h=subs(h,'k',k);
@@ -24,5 +24,8 @@ while(h_curr >= 0.0001)
     t=t+0.001;
     h_curr=eval(subs(h,'t',t));
 end
-t
-L_fin=vpa(subs(L,'t',t),5)
+disp('T (sec):');
+disp(t);
+L_fin=vpa(subs(L,'t',t),5);
+disp('L (metres):');
+disp(L_fin);
