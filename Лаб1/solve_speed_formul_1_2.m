@@ -35,7 +35,7 @@ else
     plot(a, v_started, '*')
     xlabel('a, deg')
     ylabel('v, м/с')
-    title('Зависимость начальной скорости от eukf jnrkjytybz')
+    title('Зависимость начальной скорости от угла отклонения')
     figure
     histogram(a, 10)
     xlabel('v, м/с')
