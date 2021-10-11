@@ -16,9 +16,9 @@ v_lambda = 0.1;
 v_m0 = 500000;
 v_u = 3000;
 v_m_p = 1000;
-v_m_d_t = 49000;
-v_m_s = v_m0 * v_lambda
-v_m_t = v_m0 - v_m_s - v_m_p
+v_m_d_t = 100000;
+v_m_s = v_m0 * 0.8;
+v_m_t = v_m0 - v_m_s - v_m_p;
 
 v = subs(v, 'u', v_u);
 v = subs(v, 'm_d_t', v_m_d_t);
@@ -37,12 +37,11 @@ vv(1) = double(subs(v, 't', 0));
 vm(1) = double(subs((v_m_d_t* t), 't', 0));
 count = 0;
 i=1
-while(vh(i) < 100000) 
-    count = count +0.1;
-    i=i+1;
-    vv(i) = double(subs(v, 't', count));
-    vh(i) = double(subs(h, 't', count));
-    vm(i) = double(subs((v_m_d_t* t), 't', count));
+while(vh(i) < 100000)    
+    vv(i+1) = double(subs(v, 't', count));
+    vh(i+1) = double(subs(h, 't', count));
+    vm(i+1) = double(subs((v_m_d_t* t), 't', count));
+    i=count+1;
 end
 plot(vh, vv, 'b.')
 
