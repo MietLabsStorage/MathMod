@@ -12,8 +12,9 @@ H = 100000;
 dt = 0.1;
 
 v = u*log(1+m_d_t*t/(m_s+m_p));
-h = v*t-diff(v,t)*t*t/2;
+h = v*t+diff(v,t)*t*t/2;
 
+v_lambda=0.02;
 v_m0 = 500000;
 v_u = 3000;
 v_m_p = 1000;
@@ -30,18 +31,18 @@ h = subs(h, 'm_p', v_m_p);
 hold on
 grid on
 xlim([0 H])
-for lambda = 0.02:0.03:0.2
+for N = 1:1:5
     
     clear vlh vlv vlm
-    vl = v;
-    hl = h;
+    vly = v;
+    hly = h;
     
-    v_m_s = v_m0 * lambda;
+    v_m_s = v_m0 * v_lambda;
     v_m_t = v_m0 - v_m_s - v_m_p;
     
-    vl = subs(vl, 'm_s', v_m_s);
-    vl = subs(vl, 'm_t', v_m_t);     
-    hl = subs(hl, 'm_s', v_m_s);
+    vl = subs(vly, 'm_s', v_m_s);
+    vl = subs(vl, 'm_t', v_m_t);   
+    hl = subs(hly, 'm_s', v_m_s);
     hl = subs(hl, 'm_t', v_m_t);
     
     i = 1;
@@ -50,28 +51,35 @@ for lambda = 0.02:0.03:0.2
     vlv(i) = double(subs(vl, 't', count));
     vlm(i) = double(subs((v_m_d_t* t), 't', count));
     
-    while or(vlh(i) < H, v_m_s+v_m_p+v_m_t-v_m_d_t*count >= 0) 
+    q = v_m_t/N;
+    while vlh(i) < H
         count = count + dt;
         i=i+1;
         vlv(i) = double(subs(vl, 't', count));
         vlh(i) = double(subs(hl, 't', count));
         vlm(i) = double(subs((v_m_d_t* t), 't', count));
+        if(vlm(i) >= q)
+           q=q+ v_m_t/N;
+           v_m_s = 0.9 * v_m_s;
+           vl = subs(vly, 'm_s', v_m_s);
+           vl = subs(vl, 'm_t', v_m_t);   
+           hl = subs(hly, 'm_s', v_m_s);
+           hl = subs(hl, 'm_t', v_m_t);
+        end
     end    
     plot(vlh, vlv)  
 end
-legendVals = 0.02:0.03:0.2;
-legend(arrayfun(@num2str, legendVals, 'UniformOutput', false))
-title('Зависимость скорости ракеты от достигнутой высоты, коэффициента структурной массы')
 xlabel('h, м')
 ylabel('v, м/с')
-plot([0:10000:H], [7844 7844], 'm*')
-plot([0:10000:H], [11200 11200], 'm+')
-
-
-
-
-
-
-
-
+x = 0:1000:H;
+speed1 = x*0+7844;
+speed2 = x*0+11200;
+plot(x, speed1, '*')
+plot(x, speed2, '+')
+legendVals = 1:1:5;
+legendVals = arrayfun(@num2str, legendVals, 'UniformOutput', false);
+legendVals(end+1) = {'ПКМ'};
+legendVals(end+1) = {'ВКМ'};
+legend(legendVals)
+title('Зависимость скорости ракеты от достигнутой высоты, колличества ступеней')
 
