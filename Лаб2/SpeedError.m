@@ -12,7 +12,7 @@ syms d_mp
 syms d_mdt
 
 v = u*log(1+m_t/(m_s+m_p));
-dv = diff(v, m_p)*d_mp + diff(v, m_d_t)*d_mdt
+dv = diff(v, m_p)*d_mp + diff(v, m_d_t)*d_mdt;
 
 v_lambda = 0.02;
 v_m0 = 500000;
