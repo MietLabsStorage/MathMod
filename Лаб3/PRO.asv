@@ -1,6 +1,6 @@
 clear
 
-doPlot = false;
+doPlot = true;
 
 v_en = 1000;
 alef_en = pi/4;
@@ -14,7 +14,7 @@ t_iter = 0.01;
 t_rli = 0.1;
 v_pro=2000;
 b_step = 0.001;
-bomb_radius=150;
+bomb_radius=20;
 
 t=0;
 index = 1;
@@ -39,23 +39,7 @@ syms c
 
 C1 = 0;
 C2 = 0;
-for model=1:1:1000
-t=0;
-index = 1;
-newIndex = 1;
-X_en(index) = 0;
-H_en(index) = 0;
-x_en(newIndex) = 0;
-h_en(newIndex) = 0;
-
-t_last = 0;
-t_pusk = 0;
-X_pusk =0;
-H_pusk =0;
-bombx_en =0;
-bombh_en =0;
-
-t_bomb=1000;   
+for model=1:1:1
 while(true)
     t=t+t_iter;
     index=index+1;
@@ -156,22 +140,16 @@ if(doPlot)
     legend('траектория врага', 'ПРО', 'штаб', 'снятые данные', 'рак. в мом. пуск. наш.', 'рак. в мом. взрыв', 'мним.траект', 'возмездие', 'возмездие');
     
     c1 = sqrt((0-double(coords1(1)))^2+(0-double(coefs.a).*double(coords1(1)).*double(coords1(1))+double(coefs.b).*double(coords1(1))+double(coefs.c))^2);
-    if double(c1) <= bomb_radius
-        C1 =C1+1;
-    end
+    disp(double(c1))
+    disp(double(c1) <= bomb_radius)
     c2 = sqrt((bombx_en-double(coord2))^2+(bombh_en-(1-(double(coord2)-double(coord2))./(location-double(coord2))).*double(h2))^2);
-    if double(c2) <= bomb_radius
-        C2 =C2+1;
-    end
+    disp(double(c2))
+    disp(double(c2) <= bomb_radius)
 else
     c1 = sqrt((0-double(coords1(1)))^2+(0-double(coefs.a).*double(coords1(1)).*double(coords1(1))+double(coefs.b).*double(coords1(1))+double(coefs.c))^2);
-    if double(c1) <= bomb_radius
-        C1 =C1+1;
-    end
+    C1 = C1 + double((double(c1) <= bomb_radius));
     c2 = sqrt((bombx_en-double(coord2))^2+(bombh_en-(1-(double(coord2)-double(coord2))./(location-double(coord2))).*double(h2))^2);
-    if double(c2) <= bomb_radius
-        C2 =C2+1;
-    end
+    C2 = C2 + doub(double(c2) <= bomb_radius);
 end
 
 end
