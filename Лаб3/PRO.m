@@ -11,6 +11,9 @@ eps = 10;
 t_solve = 5;
 g = 9.8;
 t_iter = 0.01;
+t_rli = 0.1;
+v_pro=2000;
+b_step = 0.001;
 
 t=0;
 index = 1;
@@ -39,7 +42,7 @@ while(true)
         if t_last == 0
             t_last = t; 
         end
-        if t_last - t < 0.1
+        if t_last - t < t_rli
             x_en(newIndex) = X_en(index);
             h_en(newIndex) = normrnd(H_en(index), eps);
             newIndex = newIndex+1;
@@ -58,8 +61,35 @@ while(true)
                     Q = Q + (h_en(s) - a*x_en(s)*x_en(s)-b*x_en(s)-c)^2;                    
                 end                
                 coefs = solve(diff(Q, a),diff(Q, b),diff(Q, c));
+                
                 syms x
-                coords = solve(double(coefs.a)*x*x+double(coefs.b)*x+double(coefs.c));
+                coords1 = solve(double(coefs.a)*x*x+double(coefs.b)*x+double(coefs.c));
+                coord1 = double(coords1(1));
+                
+                betta1=(asin( g*(location-coord1) / v_pro / v_pro )) / 2;
+                
+                syms betta2;
+                coord2 = X_pusk + ( location - X_pusk ) * (v_en * cos(alef_en)) / (v_pro * cos(betta2));
+                t_fly = coord2 /v_pro / cos(betta2);
+                h_en_coord2 = double(coefs.a)*coord2*coord2+double(coefs.b)*coord2+double(coefs.c);
+                
+                q = v_pro*sin(betta2)*t_fly-t_fly*t_fly*g/2-h_en_coord2;
+                qb = 350;
+                bb = 1;
+                for b = 0:b_step:pi/2
+                    qq=double(subs(q, 'betta2', b));
+                    if abs(qq) < qb
+                       qb = abs(qq);
+                       betta2 = b;
+                    end
+                end
+                coord2 = subs(coord2, 'betta2', betta2);
+                h2 = double(coefs.a)*coord2*coord2+double(coefs.b)*coord2+double(coefs.c);
+                syms b2;
+                %sss = v_pro*tan(b2)-g*x*x/v_pro/v_pro/cos(b2)/cos(b2) - h2
+                %f=2*v_pro*v_pro*sqrt(1-cos(b2)*cos(b2)) - g*coord2*coord2-2*h2*v_pro*cos(b2)*cos(b2);
+                %betta2 = double(solve(f))
+                betta2=double(atan(h2/(location-coord2)))
             end
         end
     end
@@ -86,8 +116,15 @@ if(doPlot)
     plot(x_en, h_en,'*')
     plot(X_pusk, H_pusk, '^', 'LineWidth', 2)
     
-    x=double(coords(1)):0.1:100000;
+    x=double(coords1(1)):0.1:100000;
     plot(x, double(coefs.a).*x.*x+double(coefs.b).*x+double(coefs.c), 'r');
     
-    legend('траектория врага', 'ПРО', 'штаб', 'снятые данные', 'рак. в мом. пуск. наш.', 'мним.траект');
+    x=double(coords1(1)):0.1:location;
+    plot(x, x*tan(betta1)-g.*x.*x./2./v_pro./v_pro./cos(betta1)./cos(betta1));
+    
+    x=double(coord2):0.1:location;
+    h=(1-(x-double(coord2))./(location-double(coord2))).*double(h2);
+    plot(x, h);
+    
+    legend('траектория врага', 'ПРО', 'штаб', 'снятые данные', 'рак. в мом. пуск. наш.', 'мним.траект', 'возмездие', 'возмездие');
 end
