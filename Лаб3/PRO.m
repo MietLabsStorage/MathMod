@@ -14,7 +14,7 @@ t_iter = 0.01;
 t_rli = 0.1;
 v_pro=2000;
 b_step = 0.001;
-bomb_radius=150;
+bomb_radius=50;
 
 t=0;
 index = 1;
@@ -30,6 +30,7 @@ X_pusk =0;
 H_pusk =0;
 bombx_en =0;
 bombh_en =0;
+h2=0;
 
 t_bomb=1000;
 
@@ -39,7 +40,11 @@ syms c
 
 C1 = 0;
 C2 = 0;
-for model=1:1:1000
+for model=1:1:100
+    clear X_en;
+    clear H_en;
+    clear x_en;
+    clear h_en;
 t=0;
 index = 1;
 newIndex = 1;
@@ -54,8 +59,13 @@ X_pusk =0;
 H_pusk =0;
 bombx_en =0;
 bombh_en =0;
+h2=0;
 
 t_bomb=1000;   
+
+syms a
+syms b
+syms c
 while(true)
     t=t+t_iter;
     index=index+1;
