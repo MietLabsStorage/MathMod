@@ -2,6 +2,7 @@ clear
 
 doPlot = false;
 
+succes = 70;
 v_en = 1000;
 alef_en = pi/4;
 location = 75000;
@@ -14,7 +15,6 @@ t_iter = 0.01;
 t_rli = 0.1;
 v_pro=2000;
 b_step = 0.001;
-bomb_radius=50;
 
 t=0;
 index = 1;
@@ -40,7 +40,13 @@ syms c
 
 C1 = 0;
 C2 = 0;
-for model=1:1:100
+ccc1(1)=0;
+ccc2(1)=0;
+cci = 1;
+for bomb_radius=50:10:150
+    C1 = 0;
+C2 = 0;
+for model=1:1:50
     clear X_en;
     clear H_en;
     clear x_en;
@@ -66,6 +72,7 @@ t_bomb=1000;
 syms a
 syms b
 syms c
+
 while(true)
     t=t+t_iter;
     index=index+1;
@@ -142,7 +149,7 @@ if(doPlot)
 
     xlim([-1000 120000])
     ylim([0 30000])
-    xlabel('расстоие от базы противника, м')
+    xlabel('расстояние от базы противника, м')
     ylabel('высота, м')
     title('полет вражеских ракет')
 
@@ -173,6 +180,11 @@ if(doPlot)
     if double(c2) <= bomb_radius
         C2 =C2+1;
     end
+    
+    disp('Взрыв ПУ')
+disp(C1);
+disp('Взрыв Ракеты')
+disp(C2);
 else
     c1 = sqrt((0-double(coords1(1)))^2+(0-double(coefs.a).*double(coords1(1)).*double(coords1(1))+double(coefs.b).*double(coords1(1))+double(coefs.c))^2);
     if double(c1) <= bomb_radius
@@ -186,7 +198,22 @@ end
 
 end
 
-disp('Взрыв ПУ')
-disp(C1);
-disp('Взрыв Ракеты')
-disp(C2);
+ccc1(cci) = C1;
+ccc2(cci) = C2;
+cci = cci+1;
+end
+
+if(doPlot)
+    %ignore
+else
+    hold on
+grid on
+ccci = 50:10:150;
+plot(ccci, ccc1.*2)
+plot(ccci, ccc2.*2)
+plot(ccci, ccci.*succes./ccci)
+legend('Взрыв ПУ', 'Взрыв Ракеты')
+title('Вероятность взрыва')
+xlabel('радиус взрыва, м')
+ylabel('вероятность взрыва, %')
+end
