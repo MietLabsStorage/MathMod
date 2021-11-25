@@ -159,24 +159,36 @@ if(doPlot)
     plot(x_en, h_en,'*')
     plot(X_pusk, H_pusk, '^', 'LineWidth', 2)
     plot(bombx_en, bombh_en, '^', 'LineWidth', 2)
-    
+
     x=double(coords1(1)):0.1:100000;
     plot(x, double(coefs.a).*x.*x+double(coefs.b).*x+double(coefs.c), 'r');
     
     x=double(coords1(1)):0.1:location;
     plot(x, x*tan(betta1)-g.*x.*x./2./v_pro./v_pro./cos(betta1)./cos(betta1));
     
+    disp('Центр взрыва при ПУ (x,h):')
+    disp(double(coords1(1)))
+    disp(double(coords1(1))*tan(betta1)-g.*double(coords1(1)).*double(coords1(1))./2./v_pro./v_pro./cos(betta1)./cos(betta1))
+    
     x=double(coord2):0.1:location;
     h=(1-(x-double(coord2))./(location-double(coord2))).*double(h2);
     plot(x, h);
     
+    disp('Центр взрыва при ракеты (x,h):')
+    disp(double(coord2))
+    disp((1-(double(coord2)-double(coord2))./(location-double(coord2))).*double(h2))
+    
     legend('траектория врага', 'ПРО', 'штаб', 'снятые данные', 'рак. в мом. пуск. наш.', 'рак. в мом. взрыв', 'мним.траект', 'возмездие', 'возмездие');
     
     c1 = sqrt((0-double(coords1(1)))^2+(0-double(coefs.a).*double(coords1(1)).*double(coords1(1))+double(coefs.b).*double(coords1(1))+double(coefs.c))^2);
+    disp('Отклонение (ПУ):')
+    disp(double(c1))
     if double(c1) <= bomb_radius
         C1 =C1+1;
     end
     c2 = sqrt((bombx_en-double(coord2))^2+(bombh_en-(1-(double(coord2)-double(coord2))./(location-double(coord2))).*double(h2))^2);
+    disp('Отклонение (ракета):')
+    disp(double(c2))
     if double(c2) <= bomb_radius
         C2 =C2+1;
     end
